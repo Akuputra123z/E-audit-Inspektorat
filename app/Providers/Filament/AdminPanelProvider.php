@@ -18,8 +18,8 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use App\Filament\Pages\EditProfile;
-use Filament\Navigation\NavigationGroup;
+
+use DiogoGPinto\AuthUIEnhancer\AuthUIEnhancerPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -48,7 +48,7 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             
-              
+          
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
@@ -57,7 +57,8 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
-
+                FilamentInfoWidget::class,
+                
                
             ])
             ->middleware([
@@ -71,7 +72,16 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
-            
+            ->viteTheme('resources/css/filament/admin/theme.css')
+            ->plugins([
+                AuthUIEnhancerPlugin::make()
+                ->emptyPanelBackgroundImageUrl(asset('images/pantai.jpeg'))
+                 
+                ->emptyPanelBackgroundColor(Color::hex('#FFFFF'))
+
+                    
+            ])
+           
             ->authMiddleware([
                 Authenticate::class,
             ]);

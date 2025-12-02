@@ -68,6 +68,7 @@ class RecommendationsInfolist
 
                 TextEntry::make('uraian_rekom')
                     ->label('Uraian Rekomendasi')
+                    
                     ->placeholder('-')
                     ->columnSpanFull(),
 
@@ -76,12 +77,49 @@ class RecommendationsInfolist
                     ->placeholder('-'),
 
                 TextEntry::make('uraian_temuan')
-                    ->label('Uraian Temuan')
-                    ->placeholder('-')
-                    ->columnSpanFull(),
+                ->label('Uraian Temuan')
+                ->html()
+                ->columnSpanFull()
+                ->getStateUsing(function ($record) {
+
+                    if (!$record->uraian_temuan) {
+                        return '-';
+                    }
+
+                    $html = $record->uraian_temuan;
+
+                    // Tambahkan inline style langsung ke setiap table
+                    $html = preg_replace(
+                        '/<table([^>]*)>/i',
+                        '<table$1 style="border-collapse: collapse; width: 100%;">',
+                        $html
+                    );
+
+                    // Tambah garis pada setiap th
+                    $html = preg_replace(
+                        '/<th([^>]*)>/i',
+                        '<th$1 style="border:1px solid #999; padding:6px; background:#f3f4f6;">',
+                        $html
+                    );
+
+                    // Tambah garis pada setiap td
+                    $html = preg_replace(
+                        '/<td([^>]*)>/i',
+                        '<td$1 style="border:1px solid #999; padding:6px;">',
+                        $html
+                    );
+
+                    return $html;
+                }),
+
 
                 TextEntry::make('nilai_temuan')
                     ->label('Nilai Temuan')
+                    ->formatStateUsing(fn($state) =>
+                        $state !== null
+                            ? 'Rp ' . number_format((float) $state, 0, ',', '.')
+                            : '-'
+                    )
                     ->placeholder('-'),
 
                 /**
@@ -100,6 +138,11 @@ class RecommendationsInfolist
 
                 TextEntry::make('nilai_tindak_lanjut')
                     ->label('Nilai Tindak Lanjut')
+                    ->formatStateUsing(fn($state) =>
+                        $state !== null
+                            ? 'Rp ' . number_format((float) $state, 0, ',', '.')
+                            : '-'
+                    )
                     ->placeholder('-'),
 
                     ImageEntry::make('file_tindak_lanjut')

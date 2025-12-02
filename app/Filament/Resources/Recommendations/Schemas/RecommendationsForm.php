@@ -9,6 +9,7 @@ use App\Models\Lhp;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\FileUpload;
 use App\Models\KodeTemuan;
+use Filament\Forms\Components\RichEditor;
 
 class RecommendationsForm
 {
@@ -46,7 +47,7 @@ class RecommendationsForm
                         ->numeric()
                         ->nullable(),
 
-                        Textarea::make('uraian_temuan')
+                        RichEditor::make('uraian_temuan')
                         ->label('Uraian Temuan')
                         ->nullable(),
                         Select::make('kode_rekomendasi_id')

@@ -21,7 +21,7 @@ class Recommendations extends Model
         'uraian_tindak_lanjut',
         'nilai_tindak_lanjut',
         'file_tindak_lanjut',
-        'tanggapan',
+      
     ];
 
     protected $casts = [
@@ -50,4 +50,9 @@ class Recommendations extends Model
     {
         return $this->belongsTo(KodeRekomendasi::class, 'kode_rekom_id');
     }
+    public function recommendations()
+    {
+        return $this->hasMany(\App\Models\Recommendations::class, 'lhp_id', 'id');
+    }
+    
 }

@@ -42,13 +42,19 @@ class Lhp extends Model
      * LHP → Temuan → Recommendations
      * Relasi tidak langsung, tapi bisa dipanggil via temuan
      */
+    // public function recommendations()
+    // {
+    //     return $this->hasManyThrough(
+    //         Recommendations::class,   // tabel tujuan
+    //         'lhp_id',                 // FK di tabel temuan_lhp
+    //         'id',                     // PK LHP
+            
+    //     );
+    // }
+
     public function recommendations()
     {
-        return $this->hasManyThrough(
-            Recommendations::class,   // tabel tujuan
-            'lhp_id',                 // FK di tabel temuan_lhp
-            'id',                     // PK LHP
-            
-        );
+        return $this->hasMany(\App\Models\Recommendations::class, 'lhp_id', 'id');
     }
+    
 }

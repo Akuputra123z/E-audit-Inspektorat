@@ -15,7 +15,9 @@ use Filament\Actions\ExportAction;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
+use Filament\Actions\Action;
 use Illuminate\Database\Eloquent\Builder;
+use App\Http\Controllers\RecommendationsPdfController;
 
 class RecommendationsTable
 {
@@ -23,17 +25,12 @@ class RecommendationsTable
     {
         return $table
             ->columns([
-
                 TextColumn::make('no')
                     ->label('No')
-                    ->rowIndex()      // otomatis 1,2,3,... per halaman
+                    ->rowIndex()
                     ->sortable(false)
                     ->alignCenter(),
-                /**
-                 * ============================
-                 *  RELASI LHP
-                 * ============================
-                 */
+
                 TextColumn::make('lhp.nomor_lhp')
                     ->label('Nomor LHP')
                     ->sortable()
@@ -43,42 +40,27 @@ class RecommendationsTable
                     ->label('Kecamatan')
                     ->sortable()
                     ->searchable(),
-                    TextColumn::make('lhp.unit.nama_unit')
+
+                TextColumn::make('lhp.unit.nama_unit')
                     ->label('Nama Unit')
                     ->sortable()
                     ->searchable(),
 
-
-                /**
-                 * ============================
-                 *  KODE TEMUAN (RELATION)
-                 * ============================
-                 */
                 TextColumn::make('kodeTemuan.kode')
                     ->label('Kode Temuan')
                     ->sortable()
                     ->searchable(),
 
-                /**
-                 * ============================
-                 *  KODE REKOMENDASI
-                 * ============================
-                 */
                 TextColumn::make('kodeRekomendasi.kategori')
-                ->label('Kategori Rekom')
-                ->sortable()
-                ->searchable(),
-            
+                    ->label('Kategori Rekom')
+                    ->sortable()
+                    ->searchable(),
+
                 TextColumn::make('kodeRekom.kode')
                     ->label('Kode Rekomendasi')
                     ->sortable()
                     ->searchable(),
 
-                /**
-                 * ============================
-                 *  STATUS BADGE
-                 * ============================
-                 */
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
@@ -90,22 +72,11 @@ class RecommendationsTable
                     })
                     ->sortable(),
 
-                /**
-                 * ============================
-                 *  NILAI REKOMENDASI
-                 * ============================
-                 */
                 TextColumn::make('nilai_rekom')
                     ->label('Nilai Rekom')
                     ->numeric()
                     ->sortable(),
-                    
 
-                /**
-                 * ============================
-                 *  TINDAK LANJUT
-                 * ============================
-                 */
                 TextColumn::make('no_tindak_lanjut')
                     ->label('Nomor TL')
                     ->searchable(),
@@ -115,11 +86,6 @@ class RecommendationsTable
                     ->numeric()
                     ->sortable(),
 
-                /**
-                 * ============================
-                 *  FILE TINDAK LANJUT
-                 * ============================
-                 */
                 ImageColumn::make('file_tindak_lanjut')
                     ->label('Lampiran')
                     ->disk('public')
@@ -130,19 +96,18 @@ class RecommendationsTable
                         ->toArray()
                     ),
 
-                /**
-                 * ============================
-                 *  TANGGAL
-                 * ============================
-                 */
                 TextColumn::make('created_at')
                     ->label('Dibuat')
+                
                     ->dateTime('d M Y')
                     ->sortable()
                     ->toggleable(),
-
             ])
+            ->defaultSort('created_at', 'desc')
+
             ->filters([
+
+                /* --- FILTER TANGGAL BUATAN --- */
                 Filter::make('created_at')
                     ->label('Created Date')
                     ->form([
@@ -153,43 +118,59 @@ class RecommendationsTable
                         return $query
                             ->when(
                                 $data['created_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                                fn (Builder $query, $date) => $query->whereDate('created_at', '>=', $date)
                             )
                             ->when(
                                 $data['created_until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                                fn (Builder $query, $date) => $query->whereDate('created_at', '<=', $date)
                             );
                     }),
-                    SelectFilter::make('kategori')
+
+                /* --- FILTER KATEGORI UNIT --- */
+                SelectFilter::make('kategori')
                     ->label('Kategori Unit')
                     ->options([
                         'OPD'     => 'OPD',
                         'Desa'    => 'Desa',
                         'Bumdes'  => 'Bumdes',
                         'Sekolah' => 'Sekolah',
-                    ]),
-                    SelectFilter::make('status')
+                    ])
+                    ->query(fn (Builder $query, $value) =>
+                        $value ? $query->whereHas('lhp.unit', fn ($q) => $q->where('kategori', $value)) : $query
+                    ),
+
+                /* --- FILTER STATUS --- */
+                SelectFilter::make('status')
                     ->label('Status Rekomendasi')
                     ->options([
                         'pending' => 'Pending',
                         'proses'  => 'Proses',
-                        'selesai' => 'Selesai', 
+                        'selesai' => 'Selesai',
                     ]),
-
-                   
             ])
 
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
+
+                /* --- DOWNLOAD PDF PER LHP --- */
+                Action::make('downloadPdf')
+                    ->label('PDF')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->url(fn ($record) =>
+                        route('recommendations.pdf', [
+                            'lhp_id' => $record->lhp_id
+                        ])
+                    )
+                    ->openUrlInNewTab()
+                    ->color('success'),
             ])
+
             ->headerActions([
-             
                 ExportAction::make()
                     ->exporter(RecommendationsExporter::class)
                     ->label('Export'),
             ])
-            
 
             ->toolbarActions([
                 BulkActionGroup::make([
