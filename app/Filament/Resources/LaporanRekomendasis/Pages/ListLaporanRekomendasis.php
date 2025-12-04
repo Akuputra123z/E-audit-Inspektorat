@@ -25,22 +25,25 @@ class ListLaporanRekomendasis extends ListRecords
     /**
      * Return an array of Tab objects.
      */
-    public function getTabs(): array
-    {
-        return [
-             Tab::make('Semua'),
-             Tab::make('Selesai')
-             ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'selesai'))
-             ->badge(fn () => Recommendations::where('status', 'selesai')->count()),
-            Tab::make('Proses')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'proses'))
-                ->badge(fn () => Recommendations::where('status', 'proses')->count()),
-            Tab::make('Pending')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'pending'))
-                ->badge(fn () => Recommendations::where('status', 'pending')->count()),
+    // public function getTabs(): array
+    // {
+    //     return [
+    //          Tab::make('Semua'),
 
-        ];
-    }
+    //         Tab::make('Pending')
+    //             ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'pending'))
+    //             ->badge(fn () => Recommendations::where('status', 'pending')->count()),
+
+    //         Tab::make('Proses')
+    //             ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'proses'))
+    //             ->badge(fn () => Recommendations::where('status', 'proses')->count()),
+
+    //         Tab::make('Selesai')
+    //             ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'selesai'))
+    //             ->badge(fn () => Recommendations::where('status', 'selesai')->count()),
+            
+    //     ];
+    // }
 
   
 }

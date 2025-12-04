@@ -59,6 +59,7 @@ class AdminPanelProvider extends PanelProvider
                 AccountWidget::class,
                 FilamentInfoWidget::class,
                 
+                
                
             ])
             ->middleware([

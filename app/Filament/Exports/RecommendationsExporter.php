@@ -17,7 +17,7 @@ class RecommendationsExporter extends Exporter
         return [
 
 
-            ExportColumn::make('id')->label('ID'),
+            // ExportColumn::make('id')->label('ID'),
             ExportColumn::make('no')
                 ->label('No')
                 ->state(function ($record) {
@@ -69,9 +69,9 @@ class RecommendationsExporter extends Exporter
             ExportColumn::make('nilai_tindak_lanjut'),
 
             // PDF / IMAGE FILE
-            ExportColumn::make('file_tindak_lanjut'),
+            // ExportColumn::make('file_tindak_lanjut'),
 
-            // TANGGAPAN
+            
            
           
            

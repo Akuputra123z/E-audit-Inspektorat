@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 
 class RecommendationsInfolist
 {
+    
     public static function configure(Schema $schema): Schema
     {
         return $schema

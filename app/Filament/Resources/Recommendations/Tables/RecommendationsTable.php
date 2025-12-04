@@ -12,6 +12,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ExportAction;
+use Filament\Actions\ExportBulkAction;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
@@ -48,11 +49,6 @@ class RecommendationsTable
 
                 TextColumn::make('kodeTemuan.kode')
                     ->label('Kode Temuan')
-                    ->sortable()
-                    ->searchable(),
-
-                TextColumn::make('kodeRekomendasi.kategori')
-                    ->label('Kategori Rekom')
                     ->sortable()
                     ->searchable(),
 
@@ -175,7 +171,15 @@ class RecommendationsTable
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
+            
+                    ExportBulkAction::make('exportSelected')
+                        ->exporter(RecommendationsExporter::class)
+                        ->label('Export Selected')
+                        ->icon('heroicon-o-arrow-up-tray')
+                        ->modifyQueryUsing(fn ($query) => $query),
                 ]),
+                        
+            
             ]);
     }
 }

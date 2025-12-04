@@ -5,23 +5,55 @@
     <style>
         body { font-family: sans-serif; font-size: 12px; }
 
+        .kop-surat {
+            width: 80%;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .kop-surat img {
+            width: 100%;
+            height: auto;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
         }
+
         th, td {
             border: 1px solid #000;
             padding: 6px;
         }
+
         th {
             background: #eee;
+        }
+
+        .ttd-single {
+            width: 100%;
+            text-align: right;
+            margin-top: 60px;
+            padding-right: 40px;
+        }
+
+        .ttd-single img {
+            width: 120px;
+            height: auto;
+            margin-bottom: -10px;
         }
     </style>
 </head>
 <body>
 
-<h2>Laporan Rekomendasi LHP</h2>
+<!-- KOP SURAT -->
+<div class="kop-surat">
+    <img src="{{ public_path('images/logorembang.png') }}" alt="Kop Surat">
+</div>
+
+<h3 style="text-align:center;">LAPORAN REKOMENDASI LHP</h3>
+
 <p><strong>Nomor LHP:</strong> {{ $lhp->nomor_lhp }}</p>
 <p><strong>Kecamatan:</strong> {{ $lhp->nama_kecamatan }}</p>
 <p><strong>Unit:</strong> {{ $lhp->unit->nama_unit ?? '-' }}</p>
@@ -48,6 +80,17 @@
         @endforeach
     </tbody>
 </table>
+
+<!-- TTD -->
+<div class="ttd-single">
+    <p>{{ now()->format('d F Y') }}</p>
+    <p><strong>Kepala Unit</strong></p>
+
+    <!-- GAMBAR TANDA TANGAN -->
+    <img src="{{ public_path('images/ttd.png') }}" alt="Tanda Tangan">
+
+    <p><strong>Nama Pejabat</strong></p>
+</div>
 
 </body>
 </html>
